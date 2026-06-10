@@ -77,3 +77,13 @@
         grid-template-columns: 1fr;
     }
 }
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+  }
+
+  .nav-menu.active {
+    display: flex;
+  }
+}
