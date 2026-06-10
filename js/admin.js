@@ -1,115 +1,69 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// ─── BUG 2 FIX: Do NOT re-initialise Firebase here. ────────────────────────
+// app.js already initialises Firebase and exposes `window.db`.
+// Calling initializeApp() a second time with the same config causes a
+// "Firebase App named '[DEFAULT]' already exists" error which crashes
+// getDocs() and triggers the "Failed to load products" message.
+//
+// We wait for app.js to finish (it runs first via the HTML script order)
+// then grab the shared db instance from window.db.
+// ────────────────────────────────────────────────────────────────────────────
 
 import {
   getFirestore,
   collection,
-  getDocs,
-  deleteDoc,
-  doc
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const catalogGrid = document.getElementById("catalog-rendering-target");
 
-const firebaseConfig = {
+async function loadProducts() {
+  // Use the shared Firestore instance set by app.js
+  const db = window.db || getFirestore();
 
-  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
-  authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
-  projectId: "jwax-prime-laptops-cba1c",
-  storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
-  messagingSenderId: "942320237548",
-  appId: "1:942320237548:web:3f819e6c29becadb711ec9",
-  measurementId: "G-7YL5P19X0K"
+  try {
+    const querySnapshot = await getDocs(collection(db, "products"));
 
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-const auth = getAuth(app);
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  const tableTarget =
-    document.getElementById("admin-crud-table-target");
-
-  if (!tableTarget) return;
-
-  onAuthStateChanged(auth, (user) => {
-
-    if (!user) {
-
-      window.location.href = "admin-login.html";
-
+    if (querySnapshot.empty) {
+      catalogGrid.innerHTML = "<p>No products in stock right now. Check back soon.</p>";
       return;
     }
 
-    loadProducts();
-
-  });
-
-  async function loadProducts() {
-
-    const querySnapshot =
-      await getDocs(collection(db, "products"));
-
-    let html = `
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Laptop</th>
-          <th>Brand</th>
-          <th>Price</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-    `;
+    let html = "";
 
     querySnapshot.forEach((docSnap) => {
-
-      const p = docSnap.data();
+      const product = docSnap.data();
 
       html += `
-        <tr>
-
-          <td>${docSnap.id}</td>
-
-          <td>
-            <strong>${p.name}</strong>
-            <br>
-            <small>${p.processor}</small>
-          </td>
-
-          <td>${p.brand}</td>
-
-          <td>₦${Number(p.price).toLocaleString()}</td>
-
-          <td>
-            <button onclick="deleteProduct('${docSnap.id}')">
-              Delete
+        <article class="product-card-blueprint">
+          <div class="product-image-frame">
+            <img src="${product.image || ''}" alt="${product.name || 'Laptop'}">
+            <span class="quick-view-overlay-btn" onclick="viewProduct('${docSnap.id}')">Quick View</span>
+          </div>
+          <div class="product-details-content">
+            <h3>${product.name || 'Unnamed Product'}</h3>
+            <p>${product.processor || ''}</p>
+            <strong>₦${Number(product.price || 0).toLocaleString()}</strong>
+            <br><br>
+            <button class="btn btn-primary" onclick="viewProduct('${docSnap.id}')">
+              View Product
             </button>
-          </td>
-
-        </tr>
+          </div>
+        </article>
       `;
     });
 
-    html += `</tbody>`;
+    catalogGrid.innerHTML = html;
 
-    tableTarget.innerHTML = html;
+  } catch (error) {
+    console.error("[Jwax] Product load error:", error);
+    catalogGrid.innerHTML = "<h2>Failed to load products. Please refresh the page.</h2>";
   }
+}
 
-  window.deleteProduct = async function(id) {
+window.viewProduct = function (id) {
+  localStorage.setItem("selectedProduct", id);
+  window.location.href = "product-details.html";
+};
 
-    await deleteDoc(doc(db, "products", id));
-
-    alert("Product deleted");
-
-    loadProducts();
-  };
-
-});
+// Wait for DOMContentLoaded so window.db is guaranteed to be set by app.js
+document.addEventListener("DOMContentLoaded", loadProducts);
