@@ -1,34 +1,114 @@
-// js/admin.js Component Sync Controller
-document.addEventListener("DOMContentLoaded", () => {
-    const tableTarget = document.getElementById('admin-crud-table-target');
-    if(!tableTarget) return;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-    tableTarget.innerHTML = `
-        <thead>
-            <tr style="text-align:left; border-bottom:2px solid var(--border-color);">
-                <th style="padding:12px;">ID</th>
-                <th>Laptop Details</th>
-                <th>Brand</th>
-                <th>System Value Price</th>
-                <th>Actions Control</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${JWAX_DATABASE.map(p => `
-                <tr style="border-bottom:1px solid var(--border-color);">
-                    <td style="padding:12px; font-family:monospace;">${p.id}</td>
-                    <td><strong>${p.name}</strong><br><small style="color:var(--text-light)">${p.processor}</small></td>
-                    <td>${p.brand}</td>
-                    <td>₦${p.price.toLocaleString()}</td>
-                    <td>
-                        <button onclick="deleteRowElement('${p.id}')" style="color:var(--danger); cursor:pointer;"><i class="fas fa-trash-alt"></i> Wipe</button>
-                    </td>
-                </tr>
-            `).join('')}
-        </tbody>
-    `;
-});
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.deleteRowElement = function(id) {
-    showToast(`Simulation Warning: In production, row execution entry ${id} will trigger a safe database removal routine cascade.`, "danger");
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_AUTH_DOMAIN",
+  projectId: "PASTE_PROJECT_ID",
+  storageBucket: "PASTE_STORAGE_BUCKET",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId: "PASTE_APP_ID"
+
 };
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const auth = getAuth(app);
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const tableTarget =
+    document.getElementById("admin-crud-table-target");
+
+  if (!tableTarget) return;
+
+  onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+
+      window.location.href = "login.html";
+
+      return;
+    }
+
+    loadProducts();
+
+  });
+
+  async function loadProducts() {
+
+    const querySnapshot =
+      await getDocs(collection(db, "products"));
+
+    let html = `
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Laptop</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+    querySnapshot.forEach((docSnap) => {
+
+      const p = docSnap.data();
+
+      html += `
+        <tr>
+
+          <td>${docSnap.id}</td>
+
+          <td>
+            <strong>${p.name}</strong>
+            <br>
+            <small>${p.processor}</small>
+          </td>
+
+          <td>${p.brand}</td>
+
+          <td>₦${Number(p.price).toLocaleString()}</td>
+
+          <td>
+            <button onclick="deleteProduct('${docSnap.id}')">
+              Delete
+            </button>
+          </td>
+
+        </tr>
+      `;
+    });
+
+    html += `</tbody>`;
+
+    tableTarget.innerHTML = html;
+  }
+
+  window.deleteProduct = async function(id) {
+
+    await deleteDoc(doc(db, "products", id));
+
+    alert("Product deleted");
+
+    loadProducts();
+  };
+
+});

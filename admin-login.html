@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+</head>
+<body>
+
+<h1>JWAX ADMIN LOGIN</h1>
+
+<input type="email" id="email" placeholder="Admin Email">
+
+<input type="password" id="password" placeholder="Password">
+
+<button id="loginBtn">Login</button>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
+  authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
+  projectId: "jwax-prime-laptops-cba1c",
+  storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
+  messagingSenderId: "942320237548",
+  appId: "1:942320237548:web:3f819e6c29becadb711ec9",
+  measurementId: "G-7YL5P19X0K"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+document.getElementById("loginBtn")
+.addEventListener("click", () => {
+
+  const email =
+    document.getElementById("email").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+
+  .then(() => {
+
+      window.location.href = "admin.html";
+
+  })
+
+  .catch((error) => {
+
+      alert(error.message);
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
