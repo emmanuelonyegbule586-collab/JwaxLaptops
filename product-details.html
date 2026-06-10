@@ -28,77 +28,76 @@
     <main id="details-master-injector-node">
         </main>
 
-    <script src="js/app.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const activeId = localStorage.getItem('jwax_selected_product') || 'LP001';
-            const product = JWAX_DATABASE.find(p => p.id === activeId);
-            const target = document.getElementById('details-master-injector-node');
-            
-            if(!product || !target) return;
+    <script type="module">
 
-            let structuralQty = 1;
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-            target.innerHTML = `
-                <section class="details-grid-workspace">
-                    <div class="gallery-viewer-frame" id="zoom-lens-frame">
-                        <img id="zoom-target-image" src="${product.image}" alt="${product.name}">
-                    </div>
-                    <div class="technical-specs-breakdown-panel">
-                        <span style="color:var(--accent); font-weight:800; text-transform:uppercase; letter-spacing:1px;">${product.brand} Vetted Framework</span>
-                        <h1 style="font-size:2.5rem; font-weight:800; margin:10px 0 20px;">${product.name}</h1>
-                        <p style="color:var(--text-secondary); font-size:1.1rem; line-height:1.7;">Enterprise diagnostic monitoring protocols verified this hardware unit to be in exceptional, top-tier operational capability status. Delivered safely directly to your workspace.</p>
-                        
-                        <table class="tech-spec-table">
-                            <tr><th>Processor Hardware</th><td>${product.processor}</td></tr>
-                            <tr><th>RAM Layout</th><td>${product.ram} System Memory</td></tr>
-                            <tr><th>Solid State Drive</th><td>${product.storage} NVMe Storage</td></tr>
-                            <tr><th>Hardware Quality</th><td>Diagnostic ${product.grade} Standard</td></tr>
-                        </table>
+import {
+  getFirestore,
+  doc,
+  getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-                        <div class="quantity-controller-row">
-                            <div class="quantity-stepper-box">
-                                <button id="dec-qty">&minus;</button>
-                                <span id="qty-readout">1</span>
-                                <button id="inc-qty">&plus;</button>
-                            </div>
-                            <h2 style="font-size:2rem; font-weight:800;">₦${product.price.toLocaleString()}</h2>
-                        </div>
+const firebaseConfig = {
 
-                        <button class="btn btn-primary btn-lg" id="add-to-cart-action-details" style="width:100%; justify-content:center;"><i class="fas fa-shopping-basket"></i> Commit Asset Allocation to Cart</button>
-                    </div>
-                </section>
-            `;
+  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
+  authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
+  projectId: "jwax-prime-laptops-cba1c",
+  storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
+  messagingSenderId: "942320237548",
+  appId: "1:942320237548:web:3f819e6c29becadb711ec9",
+  measurementId: "G-7YL5P19X0K"
 
-            // Operational Zoom Lens Architecture implementation
-            const lensFrame = document.getElementById('zoom-lens-frame');
-            const targetImg = document.getElementById('zoom-target-image');
-            
-            lensFrame.addEventListener('mousemove', (e) => {
-                const { left, top, width, height } = lensFrame.getBoundingClientRect();
-                const x = ((e.clientX - left) / width) * 100;
-                const y = ((e.clientY - top) / height) * 100;
-                targetImg.style.transformOrigin = `${x}% ${y}%`;
-                targetImg.style.transform = 'scale(1.8)';
-            });
+};
 
-            lensFrame.addEventListener('mouseleave', () => {
-                targetImg.style.transform = 'scale(1)';
-                targetImg.style.transformOrigin = 'center center';
-            });
+const app = initializeApp(firebaseConfig);
 
-            // Local Interactive Handlers configuration
-            const qtyReadout = document.getElementById('qty-readout');
-            document.getElementById('inc-qty').addEventListener('click', () => { structuralQty++; qtyReadout.textContent = structuralQty; });
-            document.getElementById('dec-qty').addEventListener('click', () => { if(structuralQty > 1) { structuralQty--; qtyReadout.textContent = structuralQty; } });
+const db = getFirestore(app);
 
-            document.getElementById('add-to-cart-action-details').addEventListener('click', () => {
-                const existing = AppState.cart.find(item => item.id === product.id);
-                if (existing) { existing.qty += structuralQty; } else { AppState.cart.push({ ...product, qty: structuralQty }); }
-                AppState.syncCart();
-                showToast(`Injected ${structuralQty} units of asset ${product.id} directly into processing pipeline.`);
-            });
-        });
-    </script>
+const productId =
+localStorage.getItem("selectedProduct");
+
+const docRef =
+doc(db, "products", productId);
+
+const docSnap =
+await getDoc(docRef);
+
+if(docSnap.exists()) {
+
+  const product = docSnap.data();
+
+  document.getElementById(
+    "details-master-injector-node"
+  ).innerHTML = `
+
+    <section class="details-grid-workspace">
+
+      <div>
+        <img
+          src="${product.image}"
+          style="width:100%;">
+      </div>
+
+      <div>
+
+        <h1>${product.name}</h1>
+
+        <p>${product.processor}</p>
+
+        <h2>
+          ₦${Number(product.price).toLocaleString()}
+        </h2>
+
+      </div>
+
+    </section>
+
+  `;
+}
+
+</script>
 </body>
 </html>

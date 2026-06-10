@@ -3,75 +3,34 @@
  */
 
 // 1. Immutable Global Inventory Database Matrix Configuration
-const JWAX_DATABASE = [
-    {
-        id: "LP001",
-        name: "Lenovo ThinkPad X1 Carbon Gen 9",
-        brand: "Lenovo",
-        category: "Enterprise",
-        ram: "16GB",
-        storage: "512GB NVMe SSD",
-        processor: "Intel Core i7 11th Gen",
-        grade: "Grade A Pristine",
-        price: 750000,
-        slashedPrice: 850000,
-        discount: 11,
-        image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80",
-        isFeatured: true,
-        isFlashSale: false
-    },
-    {
-        id: "LP002",
-        name: "HP EliteBook 840 G8 Workstation",
-        brand: "HP",
-        category: "Enterprise",
-        ram: "32GB",
-        storage: "1TB NVMe SSD",
-        processor: "Intel Core i7 11th Gen",
-        grade: "Grade A Premium",
-        price: 820000,
-        slashedPrice: 950000,
-        discount: 13,
-        image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80",
-        isFeatured: true,
-        isFlashSale: true
-    },
-    {
-        id: "LP003",
-        name: "Dell XPS 15 9510 Creator Edition",
-        brand: "Dell",
-        category: "Creative",
-        ram: "32GB",
-        storage: "1TB NVMe SSD",
-        processor: "Intel Core i9 11th Gen / RTX 3050Ti",
-        grade: "Grade A Pristine",
-        price: 1350000,
-        slashedPrice: 1500000,
-        discount: 10,
-        image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80",
-        isFeatured: true,
-        isFlashSale: false
-    },
-    {
-        id: "LP004",
-        name: "Apple MacBook Pro 16\" M1 Pro",
-        brand: "Apple",
-        category: "Creative",
-        ram: "16GB",
-        storage: "512GB Unified SSD",
-        processor: "M1 Pro 10-Core CPU",
-        grade: "Open Box Factory Grade",
-        price: 1650000,
-        slashedPrice: 1800000,
-        discount: 8,
-        image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
-        isFeatured: false,
-        isFlashSale: true
-    }
-];
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-// Expose database globally to let feature-specific script extensions read stock
-window.JWAX_DATABASE = JWAX_DATABASE;
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+
+  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
+  authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
+  projectId: "jwax-prime-laptops-cba1c",
+  storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
+  messagingSenderId: "942320237548",
+  appId: "1:942320237548:web:3f819e6c29becadb711ec9",
+  measurementId: "G-7YL5P19X0K"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+window.db = db;
 
 // 2. Global Application State Infrastructure Object Definition
 const AppState = {
