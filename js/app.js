@@ -212,25 +212,21 @@ document.addEventListener("DOMContentLoaded", () => {
         AppState.toggleThemeMode();
     });
 });
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
 
-hamburger.addEventListener('click', () => {
-  navMenu.classList.toggle('active');
-});
 // Mobile Menu Toggle
 const hamburgerMenu = document.getElementById('hamburger-menu');
 const navLinks = document.getElementById('nav-links');
 
-hamburgerMenu.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    hamburgerMenu.classList.toggle('active');
-});
-
-// Close menu when a link is clicked
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburgerMenu.classList.remove('active');
+if (hamburgerMenu && navLinks) {
+    hamburgerMenu.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        hamburgerMenu.classList.toggle('active');
     });
-});
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            hamburgerMenu.classList.remove('active');
+        });
+    });
+}
