@@ -15,12 +15,13 @@ import {
 
 const firebaseConfig = {
 
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_AUTH_DOMAIN",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
+  authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
+  projectId: "jwax-prime-laptops-cba1c",
+  storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
+  messagingSenderId: "942320237548",
+  appId: "1:942320237548:web:3f819e6c29becadb711ec9",
+  measurementId: "G-7YL5P19X0K"
 
 };
 

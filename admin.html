@@ -46,59 +46,6 @@
     </main>
 
     <script type="module" src="js/admin.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const tableTarget = document.getElementById('admin-crud-table-target');
-            if(!tableTarget) return;
-
-            function renderAdminTableMatrix() {
-                tableTarget.innerHTML = JWAX_DATABASE.map(p => `
-                    <tr>
-                        <td style="font-family:monospace; font-weight:700;">${p.id}</td>
-                        <td><strong>${p.name}</strong><br><small style="color:var(--text-light)">${p.processor}</small></td>
-                        <td><span class="spec-pill">${p.brand}</span></td>
-                        <td style="font-weight:700;">₦${p.price.toLocaleString()}</td>
-                        <td class="action-control-btn-group">
-                            <button style="color:var(--accent);" onclick="simEditItem('${p.id}')"><i class="fas fa-edit"></i> Modify</button>
-                            <button style="color:var(--danger);" onclick="simDeleteItem('${p.id}')"><i class="fas fa-trash-alt"></i> Purge</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            window.simDeleteItem = function(id) {
-                showToast(`Asset execution packet tracking entry alignment ${id} scrubbed safely from data logs.`, "warning");
-                // Structural pipeline tracking engine simulation logic manipulation
-                const idx = JWAX_DATABASE.findIndex(p => p.id === id);
-                if(idx > -1) { JWAX_DATABASE.splice(idx,1); renderAdminTableMatrix(); }
-            };
-
-            window.simEditItem = function(id) { showToast(`Opening data modification pipeline for tracking asset matrix mapping element: ${id}`); };
-
-            document.getElementById('open-add-stock-sim-btn').addEventListener('click', () => {
-                const mockupNewItem = {
-                    id: "LP" + Math.floor(Math.random() * 900 + 100),
-                    name: "Refurbished Asus ROG Strix G15",
-                    brand: "Asus",
-                    category: "Gaming",
-                    ram: "16GB",
-                    storage: "512GB SSD",
-                    processor: "AMD Ryzen 7 / RTX 3060",
-                    grade: "Grade A Premium Standard",
-                    price: 980000,
-                    slashedPrice: 1100000,
-                    discount: 11,
-                    image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80",
-                    isFeatured: true,
-                    isFlashSale: false
-                };
-                JWAX_DATABASE.push(mockupNewItem);
-                renderAdminTableMatrix();
-                showToast(`New dynamic platform item entity structural data unit ${mockupNewItem.id} initialized smoothly!`);
-            });
-
-            renderAdminTableMatrix();
-        });
-    </script>
+    
 </body>
 </html>
