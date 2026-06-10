@@ -10,7 +10,7 @@ import {
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
+ apiKey: "AIzaSyB5aom8idliwgpviJq6s1bV0VPE2iZBDdg",
   authDomain: "jwax-prime-laptops-cba1c.firebaseapp.com",
   projectId: "jwax-prime-laptops-cba1c",
   storageBucket: "jwax-prime-laptops-cba1c.firebasestorage.app",
@@ -25,64 +25,86 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const catalogGrid =
-document.getElementById('catalog-rendering-target');
+document.getElementById(
+  "catalog-rendering-target"
+);
 
 async function loadProducts() {
 
-  const querySnapshot =
-  await getDocs(collection(db, "products"));
+  try {
 
-  let html = "";
+    const querySnapshot =
+    await getDocs(
+      collection(db, "products")
+    );
 
-  querySnapshot.forEach((doc) => {
+    let html = "";
 
-    const product = doc.data();
+    querySnapshot.forEach((docSnap) => {
 
-    html += `
+      const product = docSnap.data();
 
-      <article class="product-card-blueprint">
+      html += `
 
-        <div class="product-image-frame">
+        <article class="product-card-blueprint">
 
-          <img src="${product.image}" alt="${product.name}">
+          <div class="product-image-frame">
 
-        </div>
+            <img
+              src="${product.image}"
+              alt="${product.name}"
+            >
 
-        <div class="product-details-content">
+          </div>
 
-          <h3>${product.name}</h3>
+          <div class="product-details-content">
 
-          <p>${product.processor}</p>
+            <h3>${product.name}</h3>
 
-          <strong>
-            ₦${Number(product.price).toLocaleString()}
-          </strong>
+            <p>${product.processor}</p>
 
-          <br><br>
+            <strong>
+              ₦${Number(product.price).toLocaleString()}
+            </strong>
 
-          <button
-            onclick="viewProduct('${doc.id}')"
-            class="btn btn-primary">
+            <br><br>
 
-            View Product
+            <button
+              class="btn btn-primary"
+              onclick="viewProduct('${docSnap.id}')"
+            >
 
-          </button>
+              View Product
 
-        </div>
+            </button>
 
-      </article>
+          </div>
 
-    `;
-  });
+        </article>
 
-  catalogGrid.innerHTML = html;
+      `;
+    });
+
+    catalogGrid.innerHTML = html;
+
+  } catch(error) {
+
+    console.error(error);
+
+    catalogGrid.innerHTML =
+      "<h2>Failed to load products</h2>";
+  }
 }
 
 window.viewProduct = function(id) {
 
-  localStorage.setItem("selectedProduct", id);
+  localStorage.setItem(
+    "selectedProduct",
+    id
+  );
 
-  window.location.href = "product-details.html";
+  window.location.href =
+    "product-details.html";
 };
 
 loadProducts();
