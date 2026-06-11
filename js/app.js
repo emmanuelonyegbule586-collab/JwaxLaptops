@@ -11,14 +11,16 @@ const firebaseConfig = {
   measurementId: "G-7YL5P19X0K"
 };
 
-// Single shared Firebase instance for all pages
+// Firebase init
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.db = db;
 window.firebaseApp = app;
 
+// =====================
 // APP STATE
+// =====================
 const AppState = {
   cart: JSON.parse(localStorage.getItem('jwax_cart_manifest')) || [],
   wishlist: JSON.parse(localStorage.getItem('jwax_wishlist_manifest')) || [],
@@ -39,7 +41,7 @@ const AppState = {
     const wishlistBadge = document.getElementById('wishlist-badge');
 
     if (cartBadge) {
-      const totalItems = this.cart.reduce((total, item) => total + item.qty, 0);
+      const totalItems = this.cart.reduce((t, i) => t + i.qty, 0);
       cartBadge.textContent = totalItems;
     }
 
@@ -51,45 +53,55 @@ const AppState = {
 
 window.AppState = AppState;
 
+// =====================
 // TOAST
+// =====================
 function showToast(message) {
   const container = document.getElementById('toast-container');
-  if (!container) { alert(message); return; }
+  if (!container) return alert(message);
 
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.textContent = message;
-  container.appendChild(toast);
 
+  container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
 
 window.showToast = showToast;
 
+// =====================
+// DOM READY
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
+
   // Theme
   document.documentElement.setAttribute('data-theme', AppState.theme);
 
   // Badges
   AppState.updateGlobalNavbarBadges();
 
-  // ─── BUG 1 FIX: Mobile burger menu toggle ───────────────────────────────
-  const burger = document.querySelector('.hamburger-menu, #hamburger-menu');
-  const navLinks = document.querySelector('.nav-links');
+  // =====================
+  // MOBILE MENU FIX
+  // =====================
+  document.addEventListener("DOMContentLoaded", () => {
+  document.documentElement.setAttribute('data-theme', AppState.theme);
+  AppState.updateGlobalNavbarBadges();
+
+  const burger = document.getElementById('hamburger-menu');
+  const navLinks = document.getElementById('nav-links');
 
   if (burger && navLinks) {
     burger.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('nav-open');
-      burger.setAttribute('aria-expanded', String(isOpen));
+      navLinks.classList.toggle('active');
+      burger.classList.toggle('active');
     });
 
-    // Close nav when any link is tapped on mobile
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
-        navLinks.classList.remove('nav-open');
-        burger.setAttribute('aria-expanded', 'false');
+        navLinks.classList.remove('active');
+        burger.classList.remove('active');
       });
     });
   }
-  // ────────────────────────────────────────────────────────────────────────
 });

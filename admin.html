@@ -3,49 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internal Core Console Management Dashboard | Jwax Prime Laptops</title>
+    <title>Admin Control Console | Jwax Prime Laptops</title>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+
     <style>
         .admin-dashboard-container-layout { padding: 40px 5%; }
-        .metrics-grid-view { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px; }
-        .metric-card { background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 30px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
-        .metric-card h4 { font-size: 0.85rem; text-transform: uppercase; color: var(--text-light); letter-spacing: 1px; margin-bottom: 10px; }
-        .crud-layout-wrapper { background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 35px; overflow-x: auto; }
-        .admin-data-table { width: 100%; border-collapse: collapse; min-width: 700px; margin-top: 20px; }
-        .admin-data-table th, .admin-data-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        .admin-data-table th { background-color: var(--bg-main); font-weight: 700; }
-        .action-control-btn-group button { background: none; cursor: pointer; font-weight: 700; font-size: 0.9rem; margin-right: 12px; }
+
+        .metrics-grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: var(--radius-md);
+        }
+
+        .crud-layout-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 35px;
+            overflow-x: auto;
+        }
+
+        .admin-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .admin-data-table th,
+        .admin-data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .admin-loading {
+            padding: 20px;
+            font-weight: 600;
+            color: gray;
+        }
     </style>
 </head>
+
 <body>
-    <div id="toast-container" class="toast-container"></div>
-    <header class="main-header"><nav class="navbar"><a href="index.html" class="logo-brand"><span class="logo-accent">Admin Control</span> Console Matrix</a></nav></header>
 
-    <main class="admin-dashboard-container-layout">
-        <section class="metrics-grid-view">
-            <div class="metric-card"><h4>Gross Platform Sales Volume</h4><p style="font-size:2.2rem; font-weight:800; color:var(--accent);">₦42,850,000</p></div>
-            <div class="metric-card"><h4>Verified Registered Corporates</h4><p style="font-size:2.2rem; font-weight:800;">1,248 Users</p></div>
-            <div class="metric-card"><h4>Dispatched Stock Framework Allocation</h4><p style="font-size:2.2rem; font-weight:800;">94 Units</p></div>
-        </section>
+<div id="toast-container" class="toast-container"></div>
 
-        <section class="crud-layout-wrapper">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="font-size:1.5rem; font-weight:800;">Core Real-time Inventory Ledger Matrix</h3>
-                <button class="btn btn-primary" id="open-add-stock-sim-btn"><i class="fas fa-plus"></i> Inject New System Entity Asset</button>
-            </div>
-            <table class="admin-data-table">
-                <thead>
-                    <tr><th>System Tracking ID</th><th>Laptop Model Descriptor</th><th>Brand Class</th><th>Base Commercial Value Valuation</th><th>Operations Control</th></tr>
-                </thead>
-                <tbody id="admin-crud-table-target">
-                    </tbody>
-            </table>
-        </section>
-    </main>
+<header class="main-header">
+    <nav class="navbar">
+        <a href="index.html" class="logo-brand">
+            <span class="logo-accent">Admin</span> Console
+        </a>
+    </nav>
+</header>
 
-    <script type="module" src="js/admin.js"></script>
-    
+<main class="admin-dashboard-container-layout">
+
+    <section class="metrics-grid-view">
+        <div class="metric-card">
+            <h4>Total Revenue</h4>
+            <p style="font-size:2rem; font-weight:800;">₦42,850,000</p>
+        </div>
+
+        <div class="metric-card">
+            <h4>Users</h4>
+            <p style="font-size:2rem; font-weight:800;">1,248</p>
+        </div>
+
+        <div class="metric-card">
+            <h4>Stock Units</h4>
+            <p style="font-size:2rem; font-weight:800;">94</p>
+        </div>
+    </section>
+
+    <section class="crud-layout-wrapper">
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>Inventory System</h2>
+
+            <button class="btn btn-primary" id="open-add-stock-sim-btn">
+                <i class="fas fa-plus"></i> Add Product
+            </button>
+        </div>
+
+        <div id="admin-loading" class="admin-loading">
+            Loading inventory system...
+        </div>
+
+        <table class="admin-data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="admin-crud-table-target"></tbody>
+        </table>
+
+    </section>
+
+</main>
+
+<!-- IMPORTANT: Load core system FIRST -->
+<script type="module" src="js/app.js"></script>
+
+<!-- Then admin logic -->
+<script type="module" src="js/admin.js"></script>
+
 </body>
 </html>
